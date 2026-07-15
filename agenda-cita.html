@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda tu cita — Geely Serdán</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810; --surface:#0f0f1a; --card:#13131f; --border:#1c1c2e;
+  --accent:#00d4ff; --accent2:#0055ff; --gold:#f5c518; --green:#00e59b;
+  --text:#eeeef8; --muted:#5a5a7a; --wa:#22c55e; --wa-dk:#16a34a;
+  --r:22px; --rs:13px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.bg-glow{position:fixed;top:-40vh;left:50%;transform:translateX(-50%);width:90vw;height:70vh;background:radial-gradient(ellipse,rgba(0,60,200,.13) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px 60px}
+.hdr{padding:26px 0 0;text-align:center}
+.topbar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px}
+.topbar-logo{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.topbar-dot{width:4px;height:4px;border-radius:50%;background:var(--muted);opacity:.4}
+.hdr-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--gold);margin-bottom:18px}
+.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,9vw,50px);line-height:.95;letter-spacing:.02em;margin-bottom:8px}
+.hdr h1 span{background:linear-gradient(90deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-sub{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:6px}
+.hdr-sub strong{color:var(--green);font-weight:700}
+.value-list{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:18px 0 22px;font-size:11px;color:var(--muted)}
+.value-list span{color:var(--accent);font-weight:700}
+
+.progress-wrap{margin-bottom:20px}
+.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.progress-bar{height:3px;background:var(--border);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:10px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px;animation:fadeUp .35s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.card .csub{font-size:12px;color:var(--muted);margin-bottom:18px;font-weight:300}
+
+.day-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(min-width:420px){.day-grid{grid-template-columns:repeat(7,1fr)}}
+.day-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 4px;cursor:pointer;text-align:center;transition:all .18s}
+.day-card:hover{border-color:var(--accent)}
+.day-card.sel{border-color:var(--accent);background:rgba(0,212,255,.08);transform:translateY(-2px)}
+.day-dow{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.05em}
+.day-num{font-family:'Bebas Neue',sans-serif;font-size:22px;margin:2px 0}
+.day-mes{font-size:9px;color:var(--muted)}
+.day-card.sel .day-dow,.day-card.sel .day-num{color:var(--accent)}
+
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.slot{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 6px;cursor:pointer;text-align:center;font-size:14px;font-weight:700;color:var(--text);transition:all .18s}
+.slot:hover{border-color:var(--accent)}
+.slot.sel{border-color:transparent;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000}
+
+.fg{margin-bottom:16px}
+.fg:last-child{margin-bottom:0}
+label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em}
+input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--surface);outline:none;transition:border-color .2s}
+input:focus{border-color:var(--accent)}
+::placeholder{color:var(--muted);opacity:.7}
+
+.recap{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--text)}
+.recap b{color:var(--accent)}
+
+.btn{display:block;width:100%;padding:16px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-align:center}
+.btn-y{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;opacity:.35;pointer-events:none}
+.btn-y.on{opacity:1;pointer-events:all}
+.btn-y.on:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,85,255,.3)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dk);transform:translateY(-2px);box-shadow:0 12px 32px rgba(34,197,94,.3)}
+.btn-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;display:block;margin:14px auto 0}
+
+.note{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--accent);line-height:1.5;margin-top:14px}
+.trust-strip{display:flex;justify-content:center;gap:18px;margin-top:18px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.trust-strip span{color:var(--green);font-weight:700}
+
+.suc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:44px 24px;text-align:center}
+.suc-icon{width:72px;height:72px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:34px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.suc h3{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.02em;margin-bottom:10px}
+.suc p{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin:0 auto}
+.suc a{color:var(--wa);font-weight:700}
+
+.screen{display:none}
+.screen.on{display:block}
+.ftr{position:relative;z-index:1;text-align:center;padding:20px;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<header class="hdr">
+  <div class="topbar">
+    <span class="topbar-logo">AsesoresDigitalesG</span>
+    <div class="topbar-dot"></div>
+    <span class="topbar-logo">Geely Serdán</span>
+  </div>
+  <div class="hdr-badge">⭐ 4.6/5 · 62 reseñas en Google</div>
+  <h1>Agenda tu <span>cita</span></h1>
+  <div class="hdr-sub">Solo toma <strong>27 minutos</strong> · Sin compromiso</div>
+  <div class="value-list">
+    <div><span>🚗</span> Maneja el modelo que te interesa</div>
+    <div><span>💳</span> Resuelve tu financiamiento en persona</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">Paso 1 de 3</span>
+      <span id="prog-pct">Elige tu día</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:8%"></div></div>
+  </div>
+
+  <!-- PASO 1: DÍA -->
+  <div class="screen on" id="s-dia">
+    <div class="card">
+      <h2>¿Qué día te gustaría venir?</h2>
+      <div class="csub">Abrimos los 7 días de la semana</div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+    <div class="trust-strip">
+      <div>📍 Blvd. Hermanos Serdán 788, Puebla</div>
+    </div>
+  </div>
+
+  <!-- PASO 2: HORARIO -->
+  <div class="screen" id="s-hora">
+    <div class="card">
+      <h2>¿A qué hora te queda mejor?</h2>
+      <div class="csub" id="horaSub">Horarios disponibles ese día</div>
+      <div class="slot-grid" id="slotGrid"></div>
+    </div>
+    <button class="btn-back" onclick="irPaso(1)">← Cambiar día</button>
+  </div>
+
+  <!-- PASO 3: DATOS -->
+  <div class="screen" id="s-datos">
+    <div class="card">
+      <h2>Ya casi — tus datos</h2>
+      <div class="csub">Para confirmarte por WhatsApp</div>
+      <div class="recap" id="recapBox"></div>
+      <div class="fg">
+        <label>Nombre completo</label>
+        <input type="text" id="inp-nombre" placeholder="Tu nombre y apellidos" oninput="validarDatos()">
+      </div>
+      <div class="fg">
+        <label>Tu WhatsApp</label>
+        <input type="tel" id="inp-tel" placeholder="10 dígitos" maxlength="15" oninput="validarDatos()">
+      </div>
+      <div class="fg">
+        <label>Modelo de tu interés (opcional)</label>
+        <input type="text" id="inp-modelo" placeholder="Ej. Geely EX2 2026">
+      </div>
+      <button class="btn btn-y" id="btnConfirmar" onclick="confirmarCita()">Confirmar mi cita →</button>
+      <div class="note">Damos atención personalizada — por eso cada horario queda reservado exclusivamente para ti al confirmar.</div>
+    </div>
+    <button class="btn-back" onclick="irPaso(2)">← Cambiar horario</button>
+  </div>
+
+  <!-- CONFIRMACIÓN -->
+  <div class="screen" id="s-ok">
+    <div class="suc">
+      <div class="suc-icon">🎉</div>
+      <h3>¡Cita en camino!</h3>
+      <p id="okText">Te estamos llevando a WhatsApp para confirmar los últimos detalles con un asesor.</p>
+      <p style="margin-top:16px">Si no se abrió automáticamente, <a href="#" id="ok-link">toca aquí para continuar</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="ftr">AsesoresDigitalesG · Geely Serdán · Blvd. Hermanos Serdán 788, Puebla</footer>
+
+<script>
+const NEGOCIO_WA = "522222003265";
+const ABEL_WA = "522217729210";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxL73A2NM7YjyiI_IMHtUyT2NvIJFjbbPVpRL8EfI8g3a8dlqs5r481ZFjBKQkXz08Zw/exec";
+const DURACION_MIN = 27;
+
+const params = new URLSearchParams(window.location.search);
+const modeloURL = params.get('modelo') || '';
+
+const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DIAS_SEM = ['dom','lun','mar','mié','jué','vie','sáb'];
+const DIAS_SEM_LARGO = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+function horarioDelDia(dow) {
+  if (dow === 0) return { open: 11, close: 17 };
+  if (dow === 6) return { open: 9, close: 18 };
+  return { open: 9, close: 19 };
+}
+
+function generarSlots(open, close) {
+  const slots = [];
+  for (let h = open; h < close; h++) {
+    slots.push(h + ':00');
+    if (h + 1 < close || (h + 0.5) < close) slots.push(h + ':30');
+  }
+  return slots.filter(s => {
+    const hh = parseFloat(s.replace(':30', '.5').replace(':00', ''));
+    return hh <= close - 0.5;
+  });
+}
+
+let state = { dia: null, diaTexto: '', hora: null, dow: null };
+
+function pintarDias() {
+  const grid = document.getElementById('dayGrid');
+  grid.innerHTML = '';
+  const hoy = new Date();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(hoy);
+    d.setDate(hoy.getDate() + i);
+    const dow = d.getDay();
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.innerHTML = `<div class="day-dow">${DIAS_SEM[dow]}</div><div class="day-num">${d.getDate()}</div><div class="day-mes">${MESES[d.getMonth()]}</div>`;
+    card.onclick = () => elegirDia(d, dow, card);
+    grid.appendChild(card);
+  }
+}
+
+function elegirDia(d, dow, card) {
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  state.dia = d;
+  state.dow = dow;
+  const esHoy = d.toDateString() === new Date().toDateString();
+  state.diaTexto = (esHoy ? 'Hoy, ' : DIAS_SEM_LARGO[dow] + ' ') + d.getDate() + ' de ' + MESES[d.getMonth()];
+  setTimeout(() => irPaso(2), 250);
+}
+
+function pintarSlots() {
+  const grid = document.getElementById('slotGrid');
+  grid.innerHTML = '';
+  const h = horarioDelDia(state.dow);
+  document.getElementById('horaSub').textContent = `${state.diaTexto} · de ${h.open}:00 a ${h.close}:00`;
+  const slots = generarSlots(h.open, h.close);
+  slots.forEach(s => {
+    const btn = document.createElement('div');
+    btn.className = 'slot';
+    btn.textContent = s;
+    btn.onclick = () => elegirHora(s, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function elegirHora(s, btn) {
+  document.querySelectorAll('.slot').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  state.hora = s;
+  setTimeout(() => irPaso(3), 250);
+}
+
+function irPaso(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  if (n === 1) { document.getElementById('s-dia').classList.add('on'); pintarDias(); }
+  if (n === 2) { document.getElementById('s-hora').classList.add('on'); pintarSlots(); }
+  if (n === 3) { document.getElementById('s-datos').classList.add('on'); pintarRecap(); }
+  const pct = n === 1 ? 8 : n === 2 ? 45 : 80;
+  const labels = ['', 'Elige tu día', 'Elige tu horario', 'Tus datos'];
+  document.getElementById('prog-label').textContent = 'Paso ' + n + ' de 3';
+  document.getElementById('prog-pct').textContent = labels[n];
+  document.getElementById('prog-fill').style.width = pct + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pintarRecap() {
+  document.getElementById('recapBox').innerHTML =
+    `📅 <b>${state.diaTexto}</b> a las <b>${state.hora}</b> · Duración: ${DURACION_MIN} min`;
+  if (modeloURL) document.getElementById('inp-modelo').value = modeloURL;
+}
+
+function validarDatos() {
+  const nom = document.getElementById('inp-nombre').value.trim();
+  const tel = document.getElementById('inp-tel').value.trim();
+  document.getElementById('btnConfirmar').classList.toggle('on', nom.length >= 2 && tel.replace(/\D/g,'').length >= 10);
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function toGCalUTC(dateObj, hourStr, addMinutes) {
+  const [hh, mm] = hourStr.split(':').map(Number);
+  let utc = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), hh + 6, mm));
+  if (addMinutes) utc = new Date(utc.getTime() + addMinutes * 60000);
+  return utc.getUTCFullYear() + pad(utc.getUTCMonth()+1) + pad(utc.getUTCDate()) +
+    'T' + pad(utc.getUTCHours()) + pad(utc.getUTCMinutes()) + '00Z';
+}
+
+function confirmarCita() {
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const telefono = document.getElementById('inp-tel').value.trim();
+  const modelo = document.getElementById('inp-modelo').value.trim() || 'un modelo Geely';
+
+  const start = toGCalUTC(state.dia, state.hora, 0);
+  const end = toGCalUTC(state.dia, state.hora, DURACION_MIN);
+  const calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent('Cita Geely Serdán — ' + nombre)
+    + '&dates=' + start + '/' + end
+    + '&details=' + encodeURIComponent('Cita para conocer ' + modelo + '. Duración estimada: ' + DURACION_MIN + ' minutos.')
+    + '&location=' + encodeURIComponent('Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla');
+
+  const payload = {
+    tipo: 'cita', nombre, telefono, modelo,
+    diaTexto: state.diaTexto, horaTexto: state.hora, duracion: DURACION_MIN
+  };
+  try {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf('http') === 0) {
+      navigator.sendBeacon(APPS_SCRIPT_URL, new Blob([JSON.stringify(payload)], {type:'text/plain'}));
+    }
+  } catch (err) {}
+
+  const abelMsg = `🔔 Nueva cita agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Por favor confirma por llamada.`;
+  const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
+
+  const leadMsg = `Hola, ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl}`;
+  const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
+
+  document.getElementById('ok-link').href = leadLink;
+  irPasoFinal();
+
+  try { window.open(abelLink, '_blank'); } catch (err) {}
+  window.location.href = leadLink;
+}
+
+function irPasoFinal() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('s-ok').classList.add('on');
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-label').textContent = 'Listo';
+  document.getElementById('prog-pct').textContent = '¡Confirmado!';
+}
+
+pintarDias();
+</script>
+</body>
+</html>
