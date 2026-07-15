@@ -305,7 +305,8 @@ function confirmarCita() {
     + '&text=' + encodeURIComponent('Cita Geely Serdán — ' + nombre)
     + '&dates=' + start + '/' + end
     + '&details=' + encodeURIComponent('Cita para conocer ' + modelo + '. Duración estimada: ' + DURACION_MIN + ' minutos.')
-    + '&location=' + encodeURIComponent('Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla');
+    + '&location=' + encodeURIComponent('Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla')
+    + '&add=' + encodeURIComponent('asesoresdigitalesg@gmail.com');
 
   const payload = {
     tipo: 'cita', nombre, telefono, modelo,
