@@ -365,6 +365,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <div><div class="q-promo-ttl">Promoción del mes</div><p id="q-promo-p"></p></div>
     </div>
     <div class="q-disc">
+      El pago mensual ya incluye IVA sobre intereses. No incluye seguro de vida, accesorios ni certificado de estética — estos se agregan en tu cotización formal con el asesor.<br><br>
       Simulación con fines ilustrativos. El pago puede variar según análisis de crédito y condiciones al momento de la firma.<br>
       CAT promedio informativo sin IVA, calculado con inflación estimada del 3% anual (metodología BANXICO). Para fines de comparación exclusivamente.<br>
       Vigencia: 1 al 30 de julio 2026 · Boletín BGFS-0107-2026 V1 · Financiamiento sujeto a aprobación de Geely Financial Services / BBVA.
@@ -478,7 +479,8 @@ function liveCalc() {
   const bar   = document.getElementById('prev-bar');
   if (!rate || !S.eng || !S.term || monto <= 0) { bar.classList.remove('on'); btn2.disabled = true; return; }
   const total   = monto * (1 + cxa);
-  const monthly = pmt(total, rate, S.term);
+  const rateConIVA = rate * 1.16; // IVA 16% aplicado sobre la porción de interés, como lo cobra BBVA
+  const monthly = pmt(total, rateConIVA, S.term);
   document.getElementById('prev-amt').textContent  = fmt(monthly) + '/mes';
   document.getElementById('prev-rate').textContent = fmtPct(rate);
   bar.classList.add('on');
@@ -658,11 +660,12 @@ function buildQuote() {
   const d     = CAT[S.model];
   const p     = PLANS[S.plan];
   const rate  = p.rate(S.engPct);
+  const rateConIVA = rate * 1.16; // IVA 16% aplicado sobre la porción de interés, como lo cobra BBVA
   const cxaP  = p.cxa(d.yr);
   const monto = S.price - S.eng;
   const cxaM  = monto * cxaP;
   const total = monto + cxaM;
-  const pay   = pmt(total, rate, S.term);
+  const pay   = pmt(total, rateConIVA, S.term);
   const today = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
   const cat   = calcCAT(monto, pay, S.term);
 
