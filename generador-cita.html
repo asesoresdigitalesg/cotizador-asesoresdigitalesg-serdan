@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Cita — Geely Serdán</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810; --surface:#0f0f1a; --card:#13131f; --border:#1c1c2e;
+  --accent:#00d4ff; --accent2:#0055ff; --gold:#f5c518; --green:#00e59b;
+  --text:#eeeef8; --muted:#5a5a7a; --wa:#22c55e; --wa-dk:#16a34a;
+  --r:22px; --rs:13px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:32px 18px 60px}
+.topbar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}
+.topbar-logo{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.topbar-dot{width:4px;height:4px;border-radius:50%;background:var(--muted);opacity:.4}
+h1{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.02em;text-align:center;margin-bottom:4px}
+h1 span{background:linear-gradient(90deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.fg{margin-bottom:16px}
+.fg:last-child{margin-bottom:0}
+label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em}
+input,select,textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:var(--rs);
+  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+::placeholder{color:var(--muted);opacity:.7}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s;width:100%}
+.btn-y{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;margin-top:6px}
+.btn-y:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,85,255,.3)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dk)}
+.btn-copy{background:var(--surface);border:1.5px solid var(--border);color:var(--text)}
+.btn-copy:hover{border-color:var(--accent);color:var(--accent)}
+.btn-row{display:flex;gap:10px;margin-top:14px}
+.result{display:none}
+.result.on{display:block}
+.result-label{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+textarea.out{min-height:160px;resize:vertical;font-size:13px;line-height:1.6}
+.copied{color:var(--green);font-size:12px;text-align:center;margin-top:8px;display:none}
+.copied.on{display:block}
+.note{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--accent);line-height:1.5;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="wrap">
+  <div class="topbar">
+    <span class="topbar-logo">AsesoresDigitalesG</span>
+    <div class="topbar-dot"></div>
+    <span class="topbar-logo">Herramienta interna</span>
+  </div>
+  <h1>Generador de <span>Cita</span></h1>
+  <div class="sub">Úsala después de confirmar día y hora por llamada</div>
+
+  <div class="card">
+    <div class="fg">
+      <label>Nombre del cliente</label>
+      <input type="text" id="nombre" placeholder="Nombre y apellido">
+    </div>
+    <div class="fg">
+      <label>WhatsApp del cliente (opcional, para abrir el chat directo)</label>
+      <input type="tel" id="telefono" placeholder="10 dígitos">
+    </div>
+    <div class="fg">
+      <label>Modelo cotizado</label>
+      <input type="text" id="modelo" placeholder="Ej. Geely EX2 2026 GL">
+    </div>
+    <div class="row2">
+      <div class="fg">
+        <label>Fecha de la cita</label>
+        <input type="date" id="fecha">
+      </div>
+      <div class="fg">
+        <label>Hora de la cita</label>
+        <input type="time" id="hora" value="10:00">
+      </div>
+    </div>
+    <div class="fg">
+      <label>Duración estimada</label>
+      <select id="duracion">
+        <option value="30">30 min</option>
+        <option value="45" selected>45 min</option>
+        <option value="60">60 min</option>
+        <option value="90">90 min</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Notas adicionales (opcional)</label>
+      <textarea id="notas" style="min-height:60px" placeholder="Ej. Trae documentos para solicitud de crédito"></textarea>
+    </div>
+    <button class="btn btn-y" onclick="generar()">Generar cita →</button>
+  </div>
+
+  <div class="card result" id="resultCard">
+    <div class="result-label">✅ Mensaje listo para WhatsApp</div>
+    <textarea class="out" id="outMsg" readonly></textarea>
+    <div class="btn-row">
+      <button class="btn btn-copy" onclick="copiarMensaje()">📋 Copiar mensaje</button>
+      <button class="btn btn-wa" id="btnWa" onclick="abrirWhatsApp()">Abrir WhatsApp →</button>
+    </div>
+    <div class="copied" id="copiedMsg">Copiado ✓</div>
+    <div class="note">El link de Google Calendar ya viene incluido en el mensaje — al tocarlo, a tu cliente se le abre el evento listo para guardar en su calendario.</div>
+  </div>
+</div>
+
+<script>
+const DIRECCION = "Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla";
+const UTC_OFFSET_HOURS = 6; // Puebla / Ciudad de México, sin horario de verano
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function toGCalUTC(dateStr, timeStr, addMinutes) {
+  // dateStr: YYYY-MM-DD, timeStr: HH:MM (hora local de Puebla)
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const [hh, mm] = timeStr.split(':').map(Number);
+  // Construimos como si fuera UTC y le sumamos el offset para obtener el UTC real
+  let utc = new Date(Date.UTC(y, m - 1, d, hh + UTC_OFFSET_HOURS, mm));
+  if (addMinutes) utc = new Date(utc.getTime() + addMinutes * 60000);
+  return utc.getUTCFullYear() + pad(utc.getUTCMonth()+1) + pad(utc.getUTCDate()) +
+    'T' + pad(utc.getUTCHours()) + pad(utc.getUTCMinutes()) + '00Z';
+}
+
+function fmtFechaBonita(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function generar() {
+  const nombre = document.getElementById('nombre').value.trim() || 'Cliente';
+  const telefono = document.getElementById('telefono').value.trim();
+  const modelo = document.getElementById('modelo').value.trim() || 'tu Geely';
+  const fecha = document.getElementById('fecha').value;
+  const hora = document.getElementById('hora').value;
+  const duracion = parseInt(document.getElementById('duracion').value, 10);
+  const notas = document.getElementById('notas').value.trim();
+
+  if (!fecha || !hora) {
+    alert('Falta la fecha o la hora de la cita.');
+    return;
+  }
+
+  const start = toGCalUTC(fecha, hora, 0);
+  const end   = toGCalUTC(fecha, hora, duracion);
+
+  const detalle = `Cita para revisar cotización de ${modelo}. Cliente: ${nombre}` +
+    (telefono ? `, WhatsApp: ${telefono}` : '') +
+    (notas ? `. Notas: ${notas}` : '');
+
+  const calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent('Cita Geely Serdán — ' + nombre)
+    + '&dates=' + start + '/' + end
+    + '&details=' + encodeURIComponent(detalle)
+    + '&location=' + encodeURIComponent(DIRECCION)
+    + '&add=' + encodeURIComponent('asesoresdigitalesg@gmail.com');
+
+  const fechaBonita = fmtFechaBonita(fecha);
+  const horaBonita = new Date('2000-01-01T' + hora).toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+  const mensaje = `Hola ${nombre} 👋 tu cita en Geely Serdán quedó confirmada para el ${fechaBonita} a las ${horaBonita}.\n\n📍 ${DIRECCION}\n\nAgrégala a tu calendario aquí:\n${calUrl}\n\nCualquier duda, escríbeme por aquí mismo.`;
+
+  document.getElementById('outMsg').value = mensaje;
+  document.getElementById('resultCard').classList.add('on');
+  document.getElementById('copiedMsg').classList.remove('on');
+
+  const btnWa = document.getElementById('btnWa');
+  if (telefono && telefono.replace(/\D/g,'').length >= 10) {
+    btnWa.style.display = 'flex';
+  } else {
+    btnWa.style.display = 'none';
+  }
+
+  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copiarMensaje() {
+  const ta = document.getElementById('outMsg');
+  ta.select();
+  ta.setSelectionRange(0, 999999);
+  navigator.clipboard.writeText(ta.value).then(() => {
+    document.getElementById('copiedMsg').classList.add('on');
+    setTimeout(() => document.getElementById('copiedMsg').classList.remove('on'), 2000);
+  }).catch(() => {
+    document.execCommand('copy');
+    document.getElementById('copiedMsg').classList.add('on');
+  });
+}
+
+function abrirWhatsApp() {
+  const telefono = document.getElementById('telefono').value.trim().replace(/\D/g,'');
+  const msg = document.getElementById('outMsg').value;
+  const link = `https://wa.me/52${telefono}?text=${encodeURIComponent(msg)}`;
+  window.open(link, '_blank');
+}
+</script>
+</body>
+</html>
