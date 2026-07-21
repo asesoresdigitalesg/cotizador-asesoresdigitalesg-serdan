@@ -100,9 +100,9 @@ input:focus{border-color:var(--accent)}
     <span class="topbar-logo">Geely Serdán</span>
   </div>
   <div class="hdr-badge">⭐ 4.6/5 · 62 reseñas en Google</div>
-  <h1>Agenda tu <span>cita</span></h1>
+  <h1 id="hdrTitle">Agenda tu <span>cita</span></h1>
   <div class="hdr-sub">Solo toma <strong>27 minutos</strong> · Sin compromiso</div>
-  <div class="value-list">
+  <div class="value-list" id="valueList">
     <div><span>🚗</span> Maneja el modelo que te interesa</div>
     <div><span>💳</span> Resuelve tu financiamiento en persona</div>
   </div>
@@ -121,11 +121,11 @@ input:focus{border-color:var(--accent)}
   <!-- PASO 1: DÍA -->
   <div class="screen on" id="s-dia">
     <div class="card">
-      <h2>¿Qué día te gustaría venir?</h2>
+      <h2 id="diaTitle">¿Qué día te gustaría venir?</h2>
       <div class="csub">Abrimos los 7 días de la semana</div>
       <div class="day-grid" id="dayGrid"></div>
     </div>
-    <div class="trust-strip">
+    <div class="trust-strip" id="trustStrip">
       <div>📍 Blvd. Hermanos Serdán 788, Puebla</div>
     </div>
   </div>
@@ -186,6 +186,18 @@ const DURACION_MIN = 27;
 
 const params = new URLSearchParams(window.location.search);
 const modeloURL = params.get('modelo') || '';
+const modalidad = params.get('tipo') === 'llamada' ? 'llamada' : 'visita';
+
+function aplicarModalidad() {
+  if (modalidad === 'llamada') {
+    document.getElementById('hdrTitle').innerHTML = 'Agenda tu <span>llamada</span>';
+    document.getElementById('valueList').innerHTML =
+      '<div><span>📞</span> Asesoría personalizada por teléfono</div>' +
+      '<div><span>📋</span> Sales con un plan de acción claro</div>';
+    document.getElementById('diaTitle').textContent = '¿Qué día te queda mejor?';
+    document.getElementById('trustStrip').innerHTML = '<div>📞 Nosotros te llamamos, sin necesidad de visitarnos</div>';
+  }
+}
 
 const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const DIAS_SEM = ['dom','lun','mar','mié','jué','vie','sáb'];
@@ -298,18 +310,27 @@ function confirmarCita() {
   const nombre = document.getElementById('inp-nombre').value.trim();
   const telefono = document.getElementById('inp-tel').value.trim();
   const modelo = document.getElementById('inp-modelo').value.trim() || 'un modelo Geely';
+  const esLlamada = modalidad === 'llamada';
 
   const start = toGCalUTC(state.dia, state.hora, 0);
   const end = toGCalUTC(state.dia, state.hora, DURACION_MIN);
-  const calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-    + '&text=' + encodeURIComponent('Cita Geely Serdán — ' + nombre)
+
+  const tituloEvento = esLlamada ? 'Llamada de asesoría Geely Serdán — ' + nombre : 'Cita Geely Serdán — ' + nombre;
+  const detalleEvento = esLlamada
+    ? 'Llamada de asesoría personalizada sobre ' + modelo + '. Duración estimada: ' + DURACION_MIN + ' minutos. Te llamamos nosotros al número que dejaste.'
+    : 'Cita para conocer ' + modelo + '. Duración estimada: ' + DURACION_MIN + ' minutos.';
+
+  let calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(tituloEvento)
     + '&dates=' + start + '/' + end
-    + '&details=' + encodeURIComponent('Cita para conocer ' + modelo + '. Duración estimada: ' + DURACION_MIN + ' minutos.')
-    + '&location=' + encodeURIComponent('Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla')
+    + '&details=' + encodeURIComponent(detalleEvento)
     + '&add=' + encodeURIComponent('asesoresdigitalesg@gmail.com');
+  if (!esLlamada) {
+    calUrl += '&location=' + encodeURIComponent('Blvd. Hermanos Serdán 788, San Rafael Oriente, Puebla');
+  }
 
   const payload = {
-    tipo: 'cita', nombre, telefono, modelo,
+    tipo: 'cita', modalidad, nombre, telefono, modelo,
     diaTexto: state.diaTexto, horaTexto: state.hora, duracion: DURACION_MIN
   };
   try {
@@ -318,10 +339,14 @@ function confirmarCita() {
     }
   } catch (err) {}
 
-  const abelMsg = `🔔 Nueva cita agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Por favor confirma por llamada.`;
+  const abelMsg = esLlamada
+    ? `🔔 Nueva llamada de asesoría agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Su WhatsApp: ${telefono || 'no proporcionado'}.`
+    : `🔔 Nueva cita agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Por favor confirma por llamada.`;
   const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
 
-  const leadMsg = `Hola, ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl}`;
+  const leadMsg = esLlamada
+    ? `Hola, ya agendé mi llamada de asesoría para ${state.diaTexto} a las ${state.hora} 📞 Aquí puedo agregarla a mi calendario: ${calUrl} #LlamadaConfirmada`
+    : `Hola, ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl} #CitaConfirmada`;
   const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
 
   document.getElementById('ok-link').href = leadLink;
@@ -338,7 +363,7 @@ function irPasoFinal() {
   document.getElementById('prog-label').textContent = 'Listo';
   document.getElementById('prog-pct').textContent = '¡Confirmado!';
 }
-
+aplicarModalidad();
 pintarDias();
 </script>
 </body>
