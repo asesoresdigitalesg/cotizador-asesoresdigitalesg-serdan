@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Crédito — Geely Serdán</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810; --surface:#0f0f1a; --card:#13131f; --border:#1c1c2e;
+  --accent:#00d4ff; --accent2:#0055ff; --gold:#f5c518; --green:#00e59b;
+  --text:#eeeef8; --muted:#5a5a7a; --wa:#22c55e; --wa-dk:#16a34a;
+  --r:22px; --rs:13px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.bg-glow{position:fixed;top:-40vh;left:50%;transform:translateX(-50%);width:90vw;height:70vh;background:radial-gradient(ellipse,rgba(0,60,200,.13) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px 60px}
+.hdr{padding:26px 0 0;text-align:center}
+.topbar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}
+.topbar-logo{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.topbar-dot{width:4px;height:4px;border-radius:50%;background:var(--muted);opacity:.4}
+.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,8vw,44px);line-height:.95;letter-spacing:.02em;margin-bottom:6px}
+.hdr h1 span{background:linear-gradient(90deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:20px}
+
+.progress-wrap{margin-bottom:18px}
+.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.progress-bar{height:3px;background:var(--border);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:10px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px;animation:fadeUp .35s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.card .csub{font-size:12px;color:var(--muted);margin-bottom:18px;font-weight:300}
+
+.fg{margin-bottom:16px}
+.fg:last-child{margin-bottom:0}
+label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em}
+input,select{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--surface);outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235a5a7a' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+input:focus,select:focus{border-color:var(--accent)}
+::placeholder{color:var(--muted);opacity:.7}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{display:block;width:100%;padding:16px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-align:center}
+.btn-y{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000}
+.btn-y:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,85,255,.3)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dk);transform:translateY(-2px);box-shadow:0 12px 32px rgba(34,197,94,.3)}
+.btn-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;display:block;margin:14px auto 0}
+.btn-row{display:flex;gap:10px;margin-top:22px}
+.btn-row .btn{flex:1}
+
+.note{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--accent);line-height:1.5;margin-top:16px}
+
+.suc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:44px 24px;text-align:center}
+.suc-icon{width:72px;height:72px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:34px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.suc h3{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.02em;margin-bottom:10px}
+.suc p{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin:0 auto}
+.suc a{color:var(--wa);font-weight:700}
+
+.screen{display:none}
+.screen.on{display:block}
+.ftr{position:relative;z-index:1;text-align:center;padding:20px;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<header class="hdr">
+  <div class="topbar">
+    <span class="topbar-logo">AsesoresDigitalesG</span>
+    <div class="topbar-dot"></div>
+    <span class="topbar-logo">Geely Serdán</span>
+  </div>
+  <h1>Solicitud de <span>crédito</span></h1>
+  <div class="hdr-sub">4 pasos rápidos · Tus datos están seguros</div>
+</header>
+
+<div class="wrap">
+
+  <div class="progress-wrap">
+    <div class="progress-meta"><span id="prog-label">Paso 1 de 4</span><span id="prog-pct">Datos generales</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:12%"></div></div>
+  </div>
+
+  <!-- PASO 0: NOMBRE -->
+  <div class="screen on" id="s-0">
+    <div class="card">
+      <h2>Empecemos contigo</h2>
+      <div class="csub">Para identificar tu solicitud</div>
+      <div class="fg"><label>Nombre completo</label><input type="text" id="f-nombre" placeholder="Tu nombre y apellidos"></div>
+      <div class="fg"><label>Modelo de tu interés</label><input type="text" id="f-modelo" placeholder="Ej. Geely EX2 2026"></div>
+      <button class="btn btn-y" onclick="irPaso(1)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- PASO 1: DATOS GENERALES -->
+  <div class="screen" id="s-1">
+    <div class="card">
+      <h2>Datos generales</h2>
+      <div class="csub">Dirección misma que tu INE</div>
+      <div class="fg"><label>Dirección (misma que INE)</label><input type="text" id="f-direccion" placeholder="Calle, número, colonia"></div>
+      <div class="row2">
+        <div class="fg"><label>Celular</label><input type="tel" id="f-celular" placeholder="10 dígitos"></div>
+        <div class="fg"><label>Compañía celular</label><input type="text" id="f-compania" placeholder="Telcel, AT&T..."></div>
+      </div>
+      <div class="fg">
+        <label>Situación de vivienda</label>
+        <select id="f-vivienda">
+          <option value="">Selecciona una opción</option>
+          <option>Propia</option><option>Rentada</option><option>Hipoteca</option><option>Vive con familia</option><option>Otros</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Tiempo en residencia</label><input type="text" id="f-tresidencia" placeholder="Ej. 2 años"></div>
+        <div class="fg"><label>Estado civil</label><input type="text" id="f-civil" placeholder="Ej. Soltero(a)"></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Dependientes económicos</label><input type="text" id="f-dependientes" placeholder="Ej. 2"></div>
+        <div class="fg"><label>Máximo grado de estudios</label><input type="text" id="f-estudios" placeholder="Ej. Licenciatura"></div>
+      </div>
+      <div class="fg"><label>Profesión</label><input type="text" id="f-profesion" placeholder="Tu profesión u oficio"></div>
+      <div class="btn-row">
+        <button class="btn btn-y" onclick="irPaso(2)">Continuar →</button>
+      </div>
+    </div>
+    <button class="btn-back" onclick="irPaso(0)">← Regresar</button>
+  </div>
+
+  <!-- PASO 2: EMPLEO -->
+  <div class="screen" id="s-2">
+    <div class="card">
+      <h2>Empleo actual</h2>
+      <div class="csub">Fijo y/o variable, monto aproximado</div>
+      <div class="fg"><label>Ingreso mensual aproximado (MXN)</label><input type="text" id="f-ingreso" placeholder="Ej. 25,000"></div>
+      <div class="row2">
+        <div class="fg"><label>Nombre de empresa</label><input type="text" id="f-empresa" placeholder=""></div>
+        <div class="fg"><label>Giro de la empresa</label><input type="text" id="f-giro" placeholder=""></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Cargo o puesto</label><input type="text" id="f-cargo" placeholder=""></div>
+        <div class="fg"><label>Antigüedad</label><input type="text" id="f-antiguedad" placeholder="Ej. 3 años"></div>
+      </div>
+      <div class="fg"><label>Teléfono de la empresa</label><input type="tel" id="f-tel-empresa" placeholder=""></div>
+      <div class="fg"><label>Domicilio de la empresa</label><input type="text" id="f-dom-empresa" placeholder=""></div>
+      <div class="row2">
+        <div class="fg"><label>Código postal</label><input type="text" id="f-cp" placeholder=""></div>
+        <div class="fg"><label>Colonia o fraccionamiento</label><input type="text" id="f-colonia" placeholder=""></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Municipio</label><input type="text" id="f-municipio" placeholder=""></div>
+        <div class="fg"><label>Estado</label><input type="text" id="f-estado" placeholder=""></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-y" onclick="irPaso(3)">Continuar →</button>
+      </div>
+    </div>
+    <button class="btn-back" onclick="irPaso(1)">← Regresar</button>
+  </div>
+
+  <!-- PASO 3: REFERENCIAS -->
+  <div class="screen" id="s-3">
+    <div class="card">
+      <h2>Referencias</h2>
+      <div class="csub">Un conocido y un familiar</div>
+      <div class="fg"><label>Referencia 1 — Nombre (conocido)</label><input type="text" id="f-ref1-nombre" placeholder=""></div>
+      <div class="row2">
+        <div class="fg"><label>Teléfono</label><input type="tel" id="f-ref1-tel" placeholder=""></div>
+        <div class="fg"><label>Dirección</label><input type="text" id="f-ref1-dir" placeholder=""></div>
+      </div>
+      <div class="fg" style="margin-top:14px"><label>Referencia 2 — Nombre (familiar)</label><input type="text" id="f-ref2-nombre" placeholder=""></div>
+      <div class="row2">
+        <div class="fg"><label>Teléfono</label><input type="tel" id="f-ref2-tel" placeholder=""></div>
+        <div class="fg"><label>Dirección</label><input type="text" id="f-ref2-dir" placeholder=""></div>
+      </div>
+      <div class="fg" style="margin-top:14px"><label>Correo electrónico</label><input type="email" id="f-correo" placeholder="tu@correo.com"></div>
+      <div class="btn-row">
+        <button class="btn btn-wa" id="btnEnviar" onclick="enviarSolicitud()">Enviar solicitud →</button>
+      </div>
+      <div class="note">Tus datos solo se usan para tu trámite de crédito con Geely Financial Services — no se comparten con terceros.</div>
+    </div>
+    <button class="btn-back" onclick="irPaso(2)">← Regresar</button>
+  </div>
+
+  <!-- CONFIRMACIÓN -->
+  <div class="screen" id="s-ok">
+    <div class="suc">
+      <div class="suc-icon">✅</div>
+      <h3>¡Solicitud enviada!</h3>
+      <p id="okText">Te estamos llevando a WhatsApp para confirmar los últimos detalles con un asesor.</p>
+      <p style="margin-top:16px">Si no se abrió automáticamente, <a href="#" id="ok-link">toca aquí para continuar</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="ftr">AsesoresDigitalesG · Geely Serdán · Información confidencial</footer>
+
+<script>
+const NEGOCIO_WA = "522222003265";
+const ABEL_WA = "522217729210";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxL73A2NM7YjyiI_IMHtUyT2NvIJFjbbPVpRL8EfI8g3a8dlqs5r481ZFjBKQkXz08Zw/exec";
+
+function irPaso(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('s-' + n).classList.add('on');
+  const labels = ['Tus datos', 'Datos generales', 'Empleo actual', 'Referencias'];
+  const pct = [12, 38, 65, 90][n];
+  document.getElementById('prog-label').textContent = 'Paso ' + (n + 1) + ' de 4';
+  document.getElementById('prog-pct').textContent = labels[n];
+  document.getElementById('prog-fill').style.width = pct + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function enviarSolicitud() {
+  const data = {
+    tipo: 'solicitud_credito',
+    nombre: val('f-nombre'), modelo: val('f-modelo') || 'No especificado',
+    direccion: val('f-direccion'), celular: val('f-celular'), compania: val('f-compania'),
+    vivienda: val('f-vivienda'), tresidencia: val('f-tresidencia'), civil: val('f-civil'),
+    dependientes: val('f-dependientes'), estudios: val('f-estudios'), profesion: val('f-profesion'),
+    ingreso: val('f-ingreso'), empresa: val('f-empresa'), giro: val('f-giro'),
+    cargo: val('f-cargo'), antiguedad: val('f-antiguedad'), telEmpresa: val('f-tel-empresa'),
+    domEmpresa: val('f-dom-empresa'), cp: val('f-cp'), colonia: val('f-colonia'),
+    municipio: val('f-municipio'), estado: val('f-estado'),
+    ref1Nombre: val('f-ref1-nombre'), ref1Tel: val('f-ref1-tel'), ref1Dir: val('f-ref1-dir'),
+    ref2Nombre: val('f-ref2-nombre'), ref2Tel: val('f-ref2-tel'), ref2Dir: val('f-ref2-dir'),
+    correo: val('f-correo')
+  };
+
+  if (!data.nombre || !data.celular) {
+    alert('Falta tu nombre o celular — son necesarios para tu solicitud.');
+    return;
+  }
+
+  try {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf('http') === 0) {
+      navigator.sendBeacon(APPS_SCRIPT_URL, new Blob([JSON.stringify(data)], {type:'text/plain'}));
+    }
+  } catch (err) {}
+
+  const abelMsg = `🔔 Nueva solicitud de crédito — ${data.nombre}, interesado en ${data.modelo}. Ingreso: ${data.ingreso || 'N/D'}. Empresa: ${data.empresa || 'N/D'}. Revisa el correo o el Sheet para el detalle completo.`;
+  const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
+
+  const leadMsg = `Hola, ya llené mi solicitud de crédito para ${data.modelo} 📋 #SolicitudCredito`;
+  const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
+
+  document.getElementById('ok-link').href = leadLink;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('s-ok').classList.add('on');
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-label').textContent = 'Listo';
+  document.getElementById('prog-pct').textContent = '¡Enviado!';
+
+  try { window.open(abelLink, '_blank'); } catch (err) {}
+  window.location.href = leadLink;
+}
+</script>
+</body>
+</html>
