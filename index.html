@@ -732,7 +732,7 @@ function continuarWhatsApp() {
     }
   } catch (err) {}
 
-  const msg = `Hola, ya hice mi cotización de ${S.model} ${S.ver} — pago mensual estimado ${fmt(pay)}/mes a ${S.term} meses. Me gustaría dar el siguiente paso 🚗`;
+  const msg = `Ya hice mi cotización de ${S.model} ${S.ver} — pago mensual estimado ${fmt(pay)}/mes a ${S.term} meses. Me gustaría dar el siguiente paso 🚗`;
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
   document.getElementById('c-frm').classList.add('hidden');
