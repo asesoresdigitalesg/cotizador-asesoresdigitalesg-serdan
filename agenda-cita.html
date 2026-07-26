@@ -180,7 +180,6 @@ input:focus{border-color:var(--accent)}
 
 <script>
 const NEGOCIO_WA = "522222003265";
-const ABEL_WA = "522217729210";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxL73A2NM7YjyiI_IMHtUyT2NvIJFjbbPVpRL8EfI8g3a8dlqs5r481ZFjBKQkXz08Zw/exec";
 const DURACION_MIN = 27;
 
@@ -339,11 +338,6 @@ function confirmarCita() {
     }
   } catch (err) {}
 
-  const abelMsg = esLlamada
-    ? `🔔 Nueva llamada de asesoría agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Su WhatsApp: ${telefono || 'no proporcionado'}.`
-    : `🔔 Nueva cita agendada — ${nombre}, interesado en ${modelo}. Día: ${state.diaTexto} a las ${state.hora} (${DURACION_MIN} min). Por favor confirma por llamada.`;
-  const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
-
   const leadMsg = esLlamada
     ? `Ya agendé mi llamada de asesoría para ${state.diaTexto} a las ${state.hora} 📞 Aquí puedo agregarla a mi calendario: ${calUrl} #LlamadaConfirmada`
     : `Ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl} #CitaConfirmada`;
@@ -352,7 +346,6 @@ function confirmarCita() {
   document.getElementById('ok-link').href = leadLink;
   irPasoFinal();
 
-  try { window.open(abelLink, '_blank'); } catch (err) {}
   window.location.href = leadLink;
 }
 
