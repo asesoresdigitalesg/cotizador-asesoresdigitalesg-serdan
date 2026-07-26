@@ -204,7 +204,6 @@ input:focus,select:focus{border-color:var(--accent)}
 
 <script>
 const NEGOCIO_WA = "522222003265";
-const ABEL_WA = "522217729210";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxL73A2NM7YjyiI_IMHtUyT2NvIJFjbbPVpRL8EfI8g3a8dlqs5r481ZFjBKQkXz08Zw/exec";
 
 function irPaso(n) {
@@ -247,9 +246,6 @@ function enviarSolicitud() {
     }
   } catch (err) {}
 
-  const abelMsg = `🔔 Nueva solicitud de crédito — ${data.nombre}, interesado en ${data.modelo}. Ingreso: ${data.ingreso || 'N/D'}. Empresa: ${data.empresa || 'N/D'}. Revisa el correo o el Sheet para el detalle completo.`;
-  const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
-
   const leadMsg = `Ya llené mi solicitud de crédito para ${data.modelo} 📋 #SolicitudCredito`;
   const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
 
@@ -260,7 +256,6 @@ function enviarSolicitud() {
   document.getElementById('prog-label').textContent = 'Listo';
   document.getElementById('prog-pct').textContent = '¡Enviado!';
 
-  try { window.open(abelLink, '_blank'); } catch (err) {}
   window.location.href = leadLink;
 }
 </script>
