@@ -250,7 +250,7 @@ function enviarSolicitud() {
   const abelMsg = `🔔 Nueva solicitud de crédito — ${data.nombre}, interesado en ${data.modelo}. Ingreso: ${data.ingreso || 'N/D'}. Empresa: ${data.empresa || 'N/D'}. Revisa el correo o el Sheet para el detalle completo.`;
   const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
 
-  const leadMsg = `Hola, ya llené mi solicitud de crédito para ${data.modelo} 📋 #SolicitudCredito`;
+  const leadMsg = `Ya llené mi solicitud de crédito para ${data.modelo} 📋 #SolicitudCredito`;
   const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
 
   document.getElementById('ok-link').href = leadLink;
