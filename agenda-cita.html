@@ -345,8 +345,8 @@ function confirmarCita() {
   const abelLink = `https://wa.me/${ABEL_WA}?text=${encodeURIComponent(abelMsg)}`;
 
   const leadMsg = esLlamada
-    ? `Hola, ya agendé mi llamada de asesoría para ${state.diaTexto} a las ${state.hora} 📞 Aquí puedo agregarla a mi calendario: ${calUrl} #LlamadaConfirmada`
-    : `Hola, ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl} #CitaConfirmada`;
+    ? `Ya agendé mi llamada de asesoría para ${state.diaTexto} a las ${state.hora} 📞 Aquí puedo agregarla a mi calendario: ${calUrl} #LlamadaConfirmada`
+    : `Ya agendé mi cita para ${state.diaTexto} a las ${state.hora} 📅 Aquí puedo agregarla a mi calendario: ${calUrl} #CitaConfirmada`;
   const leadLink = `https://wa.me/${NEGOCIO_WA}?text=${encodeURIComponent(leadMsg)}`;
 
   document.getElementById('ok-link').href = leadLink;
